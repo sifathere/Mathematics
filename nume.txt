@@ -1,0 +1,209 @@
+BISECTION 
+
+#include <iostream>
+#include <cmath>
+using namespace std;
+
+double f(double x) {
+    return x*x - 19*x + 5;
+}
+
+int main() {
+    double x1, x2, E;
+    cout << "Enter x1, x2, and error tolerance E: ";
+    cin >> x1 >> x2 >> E;
+
+    if (f(x1) * f(x2) > 0) {
+        cout << "Initial values do not bracket a root. Try again." << endl;
+        return -1;
+    }
+
+    double x0;
+    while (true) {
+        x0 = (x1 + x2) / 2;
+        if (f(x1) * f(x0) < 0) x2 = x0;
+        else x1 = x0;
+
+        if (fabs((x2 - x1) / x2) < E) break;
+    }
+
+    cout << "Root: " << x0 << endl;
+    return 0;
+}
+
+FALSE POSITION
+
+#include <iostream>
+#include <cmath>
+using namespace std;
+
+double f(double x) {
+    return x * x - x - 2;
+}
+
+int main() {
+    double x1, x2, E;
+    cout << "Enter x1, x2, and error tolerance E: ";
+    cin >> x1 >> x2 >> E;
+
+    if (f(x1) * f(x2) > 0) {
+        cout << "Initial values do not bracket a root. Try again." << endl;
+        return -1;
+    }
+
+    double x0;
+    while (true) {
+        x0 = x1 - (f(x1) * (x2 - x1)) / (f(x2) - f(x1));
+        if (f(x0) * f(x1) < 0) x2 = x0;
+        else x1 = x0;
+
+        if (fabs(f(x0)) < E) break;
+    }
+
+    cout << "Root: " << x0 << endl;
+    return 0;
+}
+
+
+SECANT
+
+#include <iostream>
+#include <cmath>
+using namespace std;
+
+double f(double x) {
+    return x * x - 4 * x - 10;
+}
+
+int main() {
+    double x0 = 4.0;
+    double x1 = 2.0;
+    double tolerance = 0.0001;
+    double x2;
+
+    int iteration = 0;
+
+    while (fabs(f(x1)) > tolerance) {
+        x2 = x1 - (f(x1) * (x1 - x0)) / (f(x1) - f(x0));
+
+        x0 = x1;
+        x1 = x2;
+
+        iteration++;
+
+        cout << "Iteration " << iteration << ": x = " << x2 << ", f(x) = " << f(x2) << endl;
+    }
+
+    cout << "\nThe root of the equation is approximately: " << x2 << endl;
+
+    return 0;
+}
+
+NEWTON RAPHSON
+
+#include <iostream>
+#include <cmath>
+using namespace std;
+
+double f(double x) {
+    return x * x - 3 * x + 2;
+}
+
+double f_prime(double x) {
+    return 2 * x - 3;
+}
+
+int main() {
+    double x0, E;
+    cout << "Enter initial guess x0 and error tolerance E: ";
+    cin >> x0 >> E;
+
+    double x1;
+    int iteration = 1;
+
+    while (true) {
+        x1 = x0 - f(x0) / f_prime(x0);
+        if (fabs(f(x1)) < E) break;
+        x0 = x1;
+        iteration++;
+    }
+
+    cout << "Root: " << x1 << " after " << iteration << " iterations." << endl;
+    return 0;
+}
+
+
+
+
+
+
+******************************************
+LAGRANGE
+#include <iostream>
+using namespace std;
+
+int main() {
+    double x1 = 2.0, f_x1 = 1.4142;
+    double x2 = 3.0, f_x2 = 1.7321;
+    double x = 2.5;
+
+    double f_x = f_x1 + (x - x1) * (f_x2 - f_x1) / (x2 - x1);
+
+    cout << "The approximate square root of " << x << " is: " << f_x << endl;
+
+    return 0;
+}
+
+**********************************************
+ROUNDOFF
+#include <iostream>
+using namespace std;
+
+int main() {
+    double sum = 0.0;
+    double increment = 0.1;
+
+    for (int i = 0; i < 10; ++i) {
+        sum += increment;
+    }
+
+    cout << "Sum of 0.1 added 10 times: " << sum << endl;
+
+    if (sum == 1.0) {
+        cout << "The sum is exactly 1.0" << endl;
+    } else {
+        cout << "The sum is not exactly 1.0 due to round-off error" << endl;
+    }
+
+    if (sum == 1) {
+        cout << "The sum is exactly 1" << endl;
+    } else {
+        cout << "The sum is not exactly 1 due to round-off error" << endl;
+    }
+    
+    return 0;
+}
+
+**************************************************
+TRUNCATION
+#include <iostream>
+#include <cmath>
+using namespace std;
+
+int main() {
+    double x = 0.5;
+    double true_value = exp(x);
+    double approx_2_terms = 1 + x;
+    double approx_3_terms = approx_2_terms + (x * x) / 2.0;
+    double approx_4_terms = approx_3_terms + (x * x * x) / 6.0;
+
+    cout << "True value of e^0.5: " << true_value << endl;
+    cout << "Approximation with 2 terms: " << approx_2_terms <<
+     ", Error: " << fabs(true_value - approx_2_terms) << endl;
+    cout << "Approximation with 3 terms: " << approx_3_terms <<
+     ", Error: " << fabs(true_value - approx_3_terms) << endl;
+    cout << "Approximation with 4 terms: " << approx_4_terms <<
+     ", Error: " << fabs(true_value - approx_4_terms) << endl;
+
+    return 0;
+}
